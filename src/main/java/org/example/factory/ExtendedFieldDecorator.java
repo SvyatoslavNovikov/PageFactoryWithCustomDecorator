@@ -10,6 +10,8 @@ import org.openqa.selenium.support.pagefactory.DefaultFieldDecorator;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExtendedFieldDecorator extends DefaultFieldDecorator {
     private ElementFactory elementFactory = new DefaultElementFactory();
@@ -27,6 +29,12 @@ public class ExtendedFieldDecorator extends DefaultFieldDecorator {
         if (Element.class.isAssignableFrom(field.getType())) {
             return decorateElement(loader, field);
         }
+        /**
+         * call added methods here
+         */
+//        if (List.class.isAssignableFrom(field.getType())){
+//            return decorateListElement(loader,field);
+//        }
         return super.decorate(loader, field);
     }
 
@@ -46,4 +54,28 @@ public class ExtendedFieldDecorator extends DefaultFieldDecorator {
         PageFactory.initElements(new ExtendedFieldDecorator(wrappedElement), container);
         return container;
     }
+
+    /**
+     * added methods
+     */
+
+//    private List<Object> decorateListElement(final ClassLoader loader, final Field field) {
+//        final List<WebElement> wrappedElements = proxyForListLocator(loader, createLocator(field));
+//        List<Object> objects = new ArrayList<>();
+//        for (WebElement wrappedElement: wrappedElements) {
+//            objects.add(elementFactory.create((Class<? extends Element>) field.getType(), wrappedElement));
+//        }
+//        return objects;
+//    }
+//
+//    private List<Object> decorateListContainer(final ClassLoader loader, final Field field) {
+//        final List<WebElement> wrappedElements = proxyForListLocator(loader, createLocator(field));
+//        List<Object> objects = new ArrayList<>();
+//        for (WebElement wrappedElement: wrappedElements) {
+//            final Container container = containerFactory.create((Class<? extends Container>) field.getType(), wrappedElement);
+//            PageFactory.initElements(new ExtendedFieldDecorator(wrappedElement), container);
+//            objects.add(container);
+//        }
+//        return objects;
+//    }
 }
