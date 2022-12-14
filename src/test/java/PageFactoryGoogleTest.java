@@ -3,6 +3,7 @@ import org.example.page.SearchPage;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
@@ -19,7 +20,8 @@ public class PageFactoryGoogleTest {
 
     @BeforeMethod
     public void initDriver() {
-        driver = new ChromeDriver();
+        ChromeOptions option = new ChromeOptions().addArguments("headless");
+        driver = new ChromeDriver(option);
         driver.manage().window().setSize(new Dimension(1920, 1080));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
         driver.get("https://google.com");

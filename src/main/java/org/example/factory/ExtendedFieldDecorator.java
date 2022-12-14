@@ -30,11 +30,16 @@ public class ExtendedFieldDecorator extends DefaultFieldDecorator {
             return decorateElement(loader, field);
         }
         /**
-         * call added methods here
+         * added logic
+         * not ready
          */
-//        if (List.class.isAssignableFrom(field.getType())){
-//            return decorateListElement(loader,field);
-//        }
+
+        // ToDo Как то нужно получать класс из genericType, и вызывать соотвевующий метод
+        if (List.class.isAssignableFrom(field.getType())) {
+            System.out.println("1" + field.getGenericType());
+            System.out.println("2" + loader.getClass());
+            return decorateListContainer(loader, field);
+        }
         return super.decorate(loader, field);
     }
 
@@ -57,25 +62,29 @@ public class ExtendedFieldDecorator extends DefaultFieldDecorator {
 
     /**
      * added methods
+     * not ready
      */
 
-//    private List<Object> decorateListElement(final ClassLoader loader, final Field field) {
-//        final List<WebElement> wrappedElements = proxyForListLocator(loader, createLocator(field));
-//        List<Object> objects = new ArrayList<>();
-//        for (WebElement wrappedElement: wrappedElements) {
-//            objects.add(elementFactory.create((Class<? extends Element>) field.getType(), wrappedElement));
-//        }
-//        return objects;
-//    }
-//
-//    private List<Object> decorateListContainer(final ClassLoader loader, final Field field) {
-//        final List<WebElement> wrappedElements = proxyForListLocator(loader, createLocator(field));
-//        List<Object> objects = new ArrayList<>();
-//        for (WebElement wrappedElement: wrappedElements) {
-//            final Container container = containerFactory.create((Class<? extends Container>) field.getType(), wrappedElement);
-//            PageFactory.initElements(new ExtendedFieldDecorator(wrappedElement), container);
-//            objects.add(container);
-//        }
-//        return objects;
-//    }
+    private List<Object> decorateListElement(final ClassLoader loader, final Field field) {
+        final List<WebElement> wrapperElements = proxyForListLocator(loader, createLocator(field));
+        final List<Object> elements = new ArrayList<>();
+        for (WebElement wrapperElement: wrapperElements) {
+            elements.add(elementFactory.create((Class<? extends Element>) field.getGenericType(), wrapperElement));
+        }
+
+        return elements;
+    }
+
+    private List<Object> decorateListContainer(final ClassLoader loader, final Field field) {
+        final List<WebElement> wrapperElements = proxyForListLocator(loader, createLocator(field));
+        final List<Object> containers = new ArrayList<>();
+        for (WebElement wrapperElement: wrapperElements) {
+            final Container container = containerFactory
+                    .create((Class<? extends Container>) field.getGenericType(),wrapperElement);
+            PageFactory.initElements(new ExtendedFieldDecorator(wrapperElement), container);
+            containers.add(container);
+        }
+
+        return containers;
+   }
 }
