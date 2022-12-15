@@ -6,6 +6,7 @@ import org.example.factory.elements.Field;
 import org.example.factory.elements.Input;
 import org.example.factory.elements.impl.FieldContainer;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
@@ -28,5 +29,8 @@ public class SearchPage {
 
     @FindBy(xpath = "//*[@id='rso']/div")
     public List<FieldContainer> searchResultContainers;
+
+    @FindBy(xpath = "//*[@id='rso']/div")
+    public List<WebElement> searchResultWebElements;
 
 }

@@ -21,7 +21,7 @@ public class PageFactoryGoogleTest {
     @BeforeMethod
     public void initDriver() {
         ChromeOptions option = new ChromeOptions().addArguments("headless");
-        driver = new ChromeDriver(option);
+        driver = new ChromeDriver();
         driver.manage().window().setSize(new Dimension(1920, 1080));
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
         driver.get("https://google.com");
@@ -32,7 +32,7 @@ public class PageFactoryGoogleTest {
         SearchPage searchPage = new SearchPage(driver);
         searchPage.searchField.sendKeys("Automation step by step");
         searchPage.searchButton.click();
-        Assert.assertEquals(searchPage.searchResultContainers.size(), 8);
+        Assert.assertEquals(searchPage.searchResultContainers.size(), 7);
     }
 
     @Test
@@ -40,7 +40,15 @@ public class PageFactoryGoogleTest {
         SearchPage searchPage = new SearchPage(driver);
         searchPage.searchField.sendKeys("Automation step by step");
         searchPage.searchButton.click();
-        Assert.assertEquals(searchPage.searchResult.size(), 8);
+        Assert.assertEquals(searchPage.searchResult.size(), 7);
+    }
+
+    @Test
+    public void getListWebElements() {
+        SearchPage searchPage = new SearchPage(driver);
+        searchPage.searchField.sendKeys("Automation step by step");
+        searchPage.searchButton.click();
+        Assert.assertEquals(searchPage.searchResultWebElements.size(), 7);
     }
 
     @AfterMethod

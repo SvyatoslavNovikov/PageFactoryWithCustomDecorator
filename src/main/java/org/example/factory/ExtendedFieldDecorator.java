@@ -35,16 +35,22 @@ public class ExtendedFieldDecorator extends DefaultFieldDecorator {
          */
 
         // ToDo Как то нужно получать класс из genericType, и вызывать соотвевующий метод
+        // Закомментировать для корректной работы примера List<WebElement>
         if (List.class.isAssignableFrom(field.getType())) {
             System.out.println("1" + field.getGenericType());
             System.out.println("2" + loader.getClass());
-            return decorateListContainer(loader, field);
+
+            System.out.println("Элемент: вызывается decorateListElement()");
+        }
+        if (Container.class.isAssignableFrom(field.getType())) {
+            System.out.println("Контейнер: вызывается decorateListContainer()");
         }
         return super.decorate(loader, field);
     }
 
     private Object decorateElement(final ClassLoader loader, final Field field) {
         final WebElement wrappedElement = proxyForLocator(loader, createLocator(field));
+        System.out.println("decorateElement " + field.getType());   // exp: interface org.example.factory.elements.Input
         return elementFactory.create((Class<? extends Element>) field.getType(), wrappedElement);
     }
 
@@ -69,6 +75,7 @@ public class ExtendedFieldDecorator extends DefaultFieldDecorator {
         final List<WebElement> wrapperElements = proxyForListLocator(loader, createLocator(field));
         final List<Object> elements = new ArrayList<>();
         for (WebElement wrapperElement: wrapperElements) {
+            System.out.println("decorateListElement " + field.getGenericType());    // exp: java.util.List<org.example.factory.elements.Field>
             elements.add(elementFactory.create((Class<? extends Element>) field.getGenericType(), wrapperElement));
         }
 
