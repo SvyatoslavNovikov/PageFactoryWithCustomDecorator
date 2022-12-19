@@ -10,6 +10,8 @@ import org.openqa.selenium.support.pagefactory.DefaultFieldDecorator;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,10 +43,12 @@ public class ExtendedFieldDecorator extends DefaultFieldDecorator {
             System.out.println("2" + loader.getClass());
 
             System.out.println("Элемент: вызывается decorateListElement()");
+
+            return decorateListElement(loader, field);
         }
-        if (Container.class.isAssignableFrom(field.getType())) {
-            System.out.println("Контейнер: вызывается decorateListContainer()");
-        }
+//        if (Container.class.isAssignableFrom(field.getType())) {
+//            System.out.println("Контейнер: вызывается decorateListContainer()");
+//        }
         return super.decorate(loader, field);
     }
 
@@ -73,13 +77,15 @@ public class ExtendedFieldDecorator extends DefaultFieldDecorator {
 
     private List<Object> decorateListElement(final ClassLoader loader, final Field field) {
         final List<WebElement> wrapperElements = proxyForListLocator(loader, createLocator(field));
-        final List<Object> elements = new ArrayList<>();
-        for (WebElement wrapperElement: wrapperElements) {
-            System.out.println("decorateListElement " + field.getGenericType());    // exp: java.util.List<org.example.factory.elements.Field>
-            elements.add(elementFactory.create((Class<? extends Element>) field.getGenericType(), wrapperElement));
-        }
+        // Первая реализация - неверная
+//        final List<Object> elements = new ArrayList<>();
+//        for (WebElement wrapperElement: wrapperElements) {
+//            System.out.println("decorateListElement " + field.getGenericType());    // exp: java.util.List<org.example.factory.elements.Field>
+//            elements.add(elementFactory.create((Class<? extends Element>) field.getGenericType(), wrapperElement));
+//        }
 
-        return elements;
+        // Вместо field.getType() нужно подставлять genericType от которого можно узнать предка
+        return elementFactory.createList((Class <? extends Element>) field.getType(), wrapperElements);
     }
 
     private List<Object> decorateListContainer(final ClassLoader loader, final Field field) {
